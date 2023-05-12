@@ -55,7 +55,7 @@ for city in cities:
     )
 
     # Define MongoDB connection URI
-    MONGODB_URI = "mongodb+srv://stefentaime:HWe0pNctZeOLtZnM@cluster0.td8y4zr.mongodb.net/?retryWrites=true&w=majority"
+    MONGODB_URI = "mongodb+srv://<username>:<password>@cluster0.td8y4zr.mongodb.net/?retryWrites=true&w=majority"
 
     # Write DataFrame to MongoDB
     df.write.format("com.mongodb.spark.sql.DefaultSource") \
