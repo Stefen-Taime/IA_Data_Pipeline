@@ -1,0 +1,73 @@
+version: '3.1'
+services:
+
+  # ===================== #
+  #     Apache Hadoop     #
+  # ===================== #
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    ports:
+      - 9870:9870
+      - 9000:9000
+    volumes:
+      - ./hadoop_namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    volumes:
+      - ./hadoop_datanode:/hadoop/dfs/data
+      - ./data:/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+
+  # ===================== #
+  #     Apache Spark      #
+  # ===================== #
+  spark:
+    image: bitnami/spark:3.3.1
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - '8080:8080'
+      - '7077:7077'
+    volumes:
+      - ./data:/data
+      - ./src:/src
+  spark-worker:
+    image: bitnami/spark:3.3.1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=4G
+      - SPARK_EXECUTOR_MEMORY=4G
+      - SPARK_WORKER_CORES=4
+    ports:
+      - '8081:8081'
+    volumes:
+      - ./data:/data
+      - ./src:/src
+
+  # ===================== #
+  #        MongoDB        #
+  # ===================== #
+  mongo:
+    image: mongo
+    volumes:
+      - ./mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+  mongo-express:
+    image: mongo-express
+    ports:
+      - '8091:8081'
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=example
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
