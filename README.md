@@ -340,7 +340,9 @@ In summary, this Flask API serves as the glue that connects the user’s search 
     if __name__ == '__main__':
         app.run(debug=True)
     
-    
+ 
+ !curl -X POST -H "Content-Type: application/json" -d '{"query": "I have a budget of 70$ and I want an apartment with a double bed for 3 nights"}' http://localhost:5000
+
 
 ![](https://cdn-images-1.medium.com/max/2820/1*GvFJKcSS5bj0s4c0bazSoA.png)
 
